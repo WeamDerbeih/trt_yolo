@@ -1,4 +1,4 @@
-**Smart Human Detection System**
+# **Smart Human Detection System**
 
 Real-time face detection and recognition using NVIDIA Jetson Nano, YOLOv4-Tiny, and TensorRT
 
@@ -7,7 +7,7 @@ Real-time face detection and recognition using NVIDIA Jetson Nano, YOLOv4-Tiny, 
 
 =========================================================================
 
-**📌 Overview:**
+## **📌 Overview:**
 
 This project implements a real-time human detection and face recognition system on an edge device (NVIDIA Jetson Nano).
 
@@ -27,9 +27,9 @@ Ideal for security, surveillance, or smart home applications.
 
 =========================================================================
 
-**🛠 Key Features**
+## **🛠 Key Features**
 
-**Hardware:**
+### **Hardware:**
 
 NVIDIA Jetson Nano (4GB).
 
@@ -41,7 +41,7 @@ Active cooling (PWM fan) for thermal management.
 
 =========================================================================
 
-**Software:**
+### **Software:**
 
 JetPack SDK (Ubuntu 18.04, CUDA, TensorRT, cuDNN, VisionWorks, GStreamer)
 
@@ -68,15 +68,15 @@ Python libabries used:
 
 
 
-**Installation Steps:**
+## **📦Installation Steps:**
 
-**Install Python Libraries:**
+### **Install Python Libraries:**
 
     $ sudo apt update && sudo apt upgrade -y
   
     $ pip install face_recognition numpy opencv-python pycuda requests dlib
   
-**2.Installing PyTorch & TorchVision on Jetson Nano**
+### **Installing PyTorch & TorchVision on Jetson Nano**
 
   **Install Dependencies:**
     
@@ -136,7 +136,7 @@ Python libabries used:
     
     $ python3 onnx_to_tensorrt.py -m yolov4-tiny-416
 
-  **Next Steps**
+  ## **Next Steps**
   
   In the the main folder (tensorrt_demos): **Delete trt_yolo.py**
 
@@ -173,7 +173,43 @@ Python libabries used:
   
     $ python3 trt_yolo.py --gstr "nvarguscamerasrc sensor-id=1 ! video/x-raw(memory:NVMM), width=600, height=600, format=NV12, framerate=30/1 ! nvvidconv flip-method=2 ! video/x-raw, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink" --model yolov4-tiny-416
 
-  **Aditional Feature**:
+
+  ## **Results**:
+  
+  
+  Detection Process Using day Camera:
+  
+  ![image](https://github.com/user-attachments/assets/b07990ce-9106-4b24-8eeb-ff42b11fef53)
+  
+  Detection Process Using night Camera:
+  
+  ![image](https://github.com/user-attachments/assets/4b197d04-276e-4587-88f2-f605054d3d95)
+  
+  
+  Detection Process 25 meters away:
+  
+  ![image](https://github.com/user-attachments/assets/795c26be-a5fb-444f-89f4-958f71c3837f)
+
+  
+  Detection & Recognition Process for unkown person (His photo is not placed in the known_faces subdirectory):
+  
+  ![image](https://github.com/user-attachments/assets/a5fbf60c-fa04-4d98-85c1-6a0b337ce5f6)
+  
+
+  Sampled Photo Placed in known_faces subdirectory called weam2.jpg:
+  
+  ![image](https://github.com/user-attachments/assets/af924460-7b0e-405a-9de1-31416918ad2d)
+
+  
+  Detection & Recognition for known person:
+  
+  ![image](https://github.com/user-attachments/assets/0a4cf651-574b-4c5b-b458-b96053c9beff)
+
+
+
+
+
+  ## **Aditional Feature**:
 
   The Jetson has 2 CSI Ports for cameras. An Improvement could be the Auto-Switching between the night camera and the day one. The Normal camera operate from 6 am to 18 pm where the night one operates from 18 pm to6 am.
 
