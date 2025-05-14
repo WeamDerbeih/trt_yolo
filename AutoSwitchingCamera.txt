@@ -1,0 +1,90 @@
+import datetime
+
+# ... (keep all your existing imports and other code)
+
+class TimeAwareCamera:
+    def __init__(self):
+        self.night_gstr = "nvarguscamerasrc sensor-id=0 ! video/x-raw(memory:NVMM), width=416, height=416, format=NV12, framerate=30/1 ! nvvidconv flip-method=2 ! video/x-raw, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink"
+        self.day_gstr = "nvarguscamerasrc sensor-id=1 ! video/x-raw(memory:NVMM), width=416, height=416, format=NV12, framerate=30/1 ! nvvidconv flip-method=2 ! video/x-raw, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink"
+        self.current_cam = None
+        self.current_gstr = None
+        self.img_width = 416  # Set according to your camera resolution
+        self.img_height = 416
+        self.switch_camera_based_on_time()
+        
+    def switch_camera_based_on_time(self):
+        now = datetime.datetime.now().time()
+        night_start = datetime.time(18, 0)  # 6 PM
+        night_end = datetime.time(6, 0)     # 6 AM
+        
+        if night_start <= now or now < night_end:
+            # Night time - use night camera (sensor-id=0)
+            if self.current_gstr != self.night_gstr:
+                if self.current_cam:
+                    self.current_cam.release()
+                self.current_gstr = self.night_gstr
+                self.current_cam = Camera(self.create_args(self.night_gstr))
+        else:
+            # Day time - use day camera (sensor-id=1)
+            if self.current_gstr != self.day_gstr:
+                if self.current_cam:
+                    self.current_cam.release()
+                self.current_gstr = self.day_gstr
+                self.current_cam = Camera(self.create_args(self.day_gstr))
+    
+    def create_args(self, gstr):
+        # Create an args object with the given gstreamer pipeline
+        args = argparse.Namespace()
+        args.gstr = gstr
+        args.csi = True  # Assuming you need this for your Camera class
+        # Add any other required default arguments
+        args.image = None
+        args.video = None
+        args.width = 600
+        args.height = 600
+        return args
+    
+    def read(self):
+        # Check if we need to switch cameras
+        self.switch_camera_based_on_time()
+        return self.current_cam.read()
+    
+    def release(self):
+        if self.current_cam:
+            self.current_cam.release()
+    
+    def isOpened(self):
+        return self.current_cam.isOpened() if self.current_cam else False
+
+# Modify your main() function to use TimeAwareCamera instead of Camera
+def main():
+    args = parse_args()
+
+    if args.category_num <= 0:
+        raise SystemExit('ERROR: Invalid category_num (%d)!' % args.category_num)
+    if not os.path.isfile('yolo/%s.trt' % args.model):
+        raise SystemExit('ERROR: TensorRT model file (yolo/%s.trt) not found!' % args.model)
+
+    known_face_encodings, known_face_names = load_known_faces('known_faces')
+    recognizer = FaceRecognizerThread(known_face_encodings, known_face_names)
+
+    # Use TimeAwareCamera instead of Camera
+    cam = TimeAwareCamera()
+    if not cam.isOpened():
+        recognizer.stop()
+        raise SystemExit('ERROR: Failed to open cameras!')
+
+    cls_dict = get_cls_dict(args.category_num)
+    vis = BBoxVisualization(cls_dict)
+    trt_yolo = TrtYOLO(args.model, args.category_num, args.letter_box)
+
+    open_window(WINDOW_NAME, 'YOLO + Face Recognition Demo', cam.img_width, cam.img_height)
+
+    try:
+        loop_and_detect(cam, trt_yolo, args.conf_thresh, vis, recognizer)
+    finally:
+        recognizer.stop()
+        cam.release()
+        cv2.destroyAllWindows()
+
+# ... (keep the rest of your existing code)
