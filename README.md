@@ -174,7 +174,7 @@ Python libabries used:
     $ python3 trt_yolo.py --gstr "nvarguscamerasrc sensor-id=1 ! video/x-raw(memory:NVMM), width=600, height=600, format=NV12, framerate=30/1 ! nvvidconv flip-method=2 ! video/x-raw, format=BGRx ! videoconvert ! video/x-raw, format=BGR ! appsink" --model yolov4-tiny-416
 
 
-  ## **Results**:
+  ## **📋Results**:
   
   
   Detection Process Using day Camera:
@@ -209,7 +209,7 @@ Python libabries used:
 
 
 
-  ## **Aditional Feature**:
+  ## **✍Aditional Feature**:
 
   The Jetson has 2 CSI Ports for cameras. An Improvement could be the Auto-Switching between the night camera and the day one. The Normal camera operate from 6 am to 18 pm where the night one operates from 18 pm to6 am.
 
